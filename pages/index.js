@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import React, { useEffect } from 'react'
 const totp = require("totp-generator")
 
@@ -10,10 +11,11 @@ export default function Home() {
     <>
       <div className="max-w-screen-sm mx-auto m-2 p-4"> 
         <h1 className="text-2xl font-semibold">TOTP Generator</h1>
-        <form className="mt-4 flex flex-col space-y-4">
-          <input type="text" className="border border-gray-500 focus:ring-0 focus:outline-none px-2 rounded-sm" placeholder="Enter TOTP Key" />
-          <button type="submit" className="bg-gray-100 text-xl font-medium py-2 rounded-md">Submit</button>
-        </form>
+        <div className="flex flex-col space-y-2 mt-4">
+          <Link href="/login" className="underline text-primaryOrange">/Login</Link>
+          <Link href="/signup" className="underline text-primaryOrange">/Welcome</Link>
+
+        </div>
       </div>
     </>
   )
