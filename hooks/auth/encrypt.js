@@ -11,8 +11,8 @@ function hashPassword(password, salt) {
 }
 
 
-export default function encrypt(password){
-    const salt = generateSalt();
-    const hashedPassword = hashPassword(password, salt);
-    return {password: hashedPassword, salt};
+export default function encrypt(password, salt){
+    const saltLocal = generateSalt();
+    const hashedPassword = hashPassword(password, salt ? salt :  saltLocal);
+    return {password: hashedPassword, salt: salt ? salt : saltLocal};
 }

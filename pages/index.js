@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import React, { useEffect } from 'react'
 const totp = require("totp-generator")
@@ -10,10 +11,10 @@ export default function Home() {
   return (
     <>
       <div className="max-w-screen-sm mx-auto m-2 p-4"> 
-        <h1 className="text-2xl font-semibold">TOTP Generator</h1>
-        <div className="flex flex-col space-y-2 mt-4">
-          <Link href="/login" className="underline text-primaryOrange">/Login</Link>
-          <Link href="/signup" className="underline text-primaryOrange">/Welcome</Link>
+        <Image src="/logo.svg" width={210} height={51} alt="AuthBurst" />
+        <div className="flex flex-col space-y-2 mt-10">
+          <Link href="/login" className="underline">/Login</Link>
+          <Link href="/signup" className="underline">/Welcome</Link>
 
         </div>
       </div>
