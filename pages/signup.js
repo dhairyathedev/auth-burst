@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { inter } from '@/styles/font'
 import Image from 'next/image'
 import toast, { Toaster } from 'react-hot-toast';
-import encrypt from '@/hooks/auth/encrypt';
 import axios from 'axios';
 
 export default function SignUp() {
@@ -17,11 +16,9 @@ export default function SignUp() {
         } else if(!email){
             toast.error("Please enter the email!")
         }else if (password === confirmPassword) {
-            const { password: hash, salt } = encrypt(password);
             const res = await axios.post("/api/user/signup", {
                 email,
-                password: hash,
-                salt
+                password,
             })
             if (res.status === 200 && res.data.success) {
                 toast.success("You have signed up!");

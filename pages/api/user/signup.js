@@ -1,5 +1,6 @@
 // pages/api/signup.js
 
+import encrypt from "@/hooks/auth/encrypt";
 import { supabase } from "@/lib/supabase";
 
 
@@ -7,15 +8,16 @@ export default async function handler(req, res) {
     const { method } = req;
 
     if (method === "POST") {
-        const { email, password, salt } = req.body;
+        const { email, password } = req.body;
 
         // Get the user's IP address from the request object
         const created_ip = req.headers["x-real-ip"] || req.connection.remoteAddress;
 
         try {
+            const {password: hash, salt} = encrypt(password)
             const { data, error } = await supabase.from("users").insert({
                 email,
-                password,
+                password: hash,
                 salt,
                 created_ip,
             });

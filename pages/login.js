@@ -32,6 +32,8 @@ export default function SignUp() {
                 // Handle errors
                 if (error.response && error.response.status === 401) {
                     toast.error("Incorrect password or email!");
+                }else if(error.response && error.response.status === 500){
+                    toast.error("User does not exist!")
                 } else {
                     console.error("Unexpected error:", error);
                     toast.error("An unexpected error occurred");
@@ -57,7 +59,7 @@ export default function SignUp() {
                     <div>
                         <input type="password" placeholder="*******************" className="rounded-md bg-backgroundSecondary placeholder:text-textSecondary placeholder:text-lg px-4 border border-borderPrimary focus:outline-none focus:ring-0 focus:border-primaryOrange focus:border-2 transition-all w-full" onChange={(e) => setPassword(e.target.value)} required />
                     </div>
-                        <button type="submit" className="bg-primaryOrange mt-3 w-full p-2 text-xl font-semibold text-white rounded-md hover:opacity-80">Signup</button>
+                        <button type="submit" className="bg-primaryOrange mt-3 w-full p-2 text-xl font-semibold text-white rounded-md hover:opacity-80">Login</button>
                 </form>
             </main>
         </>

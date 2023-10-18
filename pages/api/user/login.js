@@ -13,7 +13,7 @@ export default async function handler(req, res) {
             const { data, error } = await supabase.from("users").select("*").eq("email", email);
 
             if (error) {
-                console.error("Error inserting user:", error);
+                console.error("Error fetching user:", error);
                 return res.status(500).json({ error: "Internal Server Error" });
             }
 
@@ -30,8 +30,8 @@ export default async function handler(req, res) {
                 res.status(401).json({ success: false, message: "Unauthorized!" });
             }
         } catch (error) {
-            console.error("Error creating user:", error);
-            return res.status(500).json({ error: "Internal Server Error" });
+            console.error("Error authenticating user:", error);
+            return res.status(500).json({ error: "Email not found!" });
         }
     } else {
         // Handle other HTTP methods if needed
