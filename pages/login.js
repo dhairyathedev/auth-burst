@@ -3,7 +3,7 @@ import { inter } from '@/styles/font';
 import Image from 'next/image';
 import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios';
-import jwtDecode from 'jwt-decode';
+import jwt from "jsonwebtoken"
 
 export default function Login() {
     const [password, setPassword] = useState('');
@@ -15,18 +15,24 @@ export default function Login() {
         const authToken = localStorage.getItem('authToken');
 
         if (authToken) {
-            const decodedToken = jwtDecode(authToken);
-            const expirationTime = decodedToken.exp * 1000;
-
-            if (Date.now() < expirationTime) {
-                // Token is still valid
-                setLoggedIn(true);
-                setUserId(decodedToken.userId); 
-            } else {
-                // Token has expired, log the user out
+            try {
+                const decodedToken = jwt.verify(authToken, process.env.NEXT_PUBLIC_JWT_SECRET_KEY);
+                // Check if the token is still valid
+                if (decodedToken.exp * 1000 > Date.now()) {
+                    setLoggedIn(true);
+                    setUserId(decodedToken.userId); // Extracting user ID from the token
+                } else {
+                    // Token has expired, log the user out
+                    localStorage.removeItem('authToken');
+                    setLoggedIn(false);
+                    setUserId(null);
+                }
+            } catch (error) {
+                // Token verification failed, log the user out
+                console.error('Token verification failed:', error.message);
                 localStorage.removeItem('authToken');
                 setLoggedIn(false);
-                setUserId(null)
+                setUserId(null);
             }
         }
     }, []);

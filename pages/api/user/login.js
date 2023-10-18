@@ -4,7 +4,7 @@ import encrypt from '@/hooks/auth/encrypt';
 import { supabase } from '@/lib/supabase';
 
 const DELAY_TIME_MS = 1000; // Set your desired delay time in milliseconds
-const JWT_SECRET = process.env.JWT_SECRET_KEY; // Change this to a secure secret key
+const JWT_SECRET = process.env.NEXT_PUBLIC_JWT_SECRET_KEY; // Change this to a secure secret key
 
 export default async function handler(req, res) {
     const { method } = req;
