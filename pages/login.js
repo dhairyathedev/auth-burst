@@ -4,6 +4,7 @@ import Image from 'next/image';
 import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios';
 import jwt from "jsonwebtoken"
+import Link from 'next/link';
 
 export default function Login() {
     const [password, setPassword] = useState('');
@@ -13,7 +14,6 @@ export default function Login() {
 
     useEffect(() => {
         const authToken = localStorage.getItem('authToken');
-
         if (authToken) {
             try {
                 const decodedToken = jwt.verify(authToken, process.env.NEXT_PUBLIC_JWT_SECRET_KEY);
@@ -78,7 +78,7 @@ export default function Login() {
 
     if (isLoggedIn) {
         // Redirect or render content for authenticated users
-        return <p>You are logged in as user {userId}!</p>;
+        return <p>You are logged in as user {userId}! <br /><Link href="/app">Go to application</Link></p>;
     }
 
     return (
