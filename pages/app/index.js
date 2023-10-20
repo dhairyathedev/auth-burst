@@ -1,9 +1,51 @@
+import { decodeTOTPToken } from '@/hooks/auth/encrypt';
 import IsAuthenticated from '@/hooks/auth/isAuthenticated'
+import { getCurrentSeconds } from '@/lib/time';
+import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+const totp = require("totp-generator")
 
 export default function App() {
+    const [totpTokens, setTotpTokens] = useState([])
+    const [updatingIn, setUpdatingIn] = useState("")
+    useEffect(() => {
+        setInterval(() => {
+        setUpdatingIn(30-(getCurrentSeconds() % 30))
+        })
+    }, [])
+    useEffect(() => {
+        // Initial data fetch
+        const fetchData = async () => {
+            try {
+                const userRes = await axios.post('/api/user/fetch', {
+                    token: localStorage.getItem('authToken'),
+                });
+
+                const userDetails = userRes.data.data[0];
+
+                if (userDetails.uid) {
+                    const totpRes = await axios.post('/api/totp/fetch', {
+                        token: localStorage.getItem('authToken'),
+                    });
+
+                    const decodedTokens = totpRes.data.data.map((item) => {
+                        return decodeTOTPToken(item.token, userDetails.password, userDetails.uid);
+                    });
+
+                    setTotpTokens(decodedTokens);
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchData();
+
+    }, []);
+
+    
     IsAuthenticated();
     return (
         <>
@@ -18,8 +60,12 @@ export default function App() {
                             <path d="M5 12l14 0"></path>
                         </svg>
                     </Link>
-
                 </div>
+                Updating in: {updatingIn}
+                {totpTokens.map((item, index) => (
+                    <p key={index}>{totp(item)}</p>
+                ))}
+
             </div>
         </>
     )

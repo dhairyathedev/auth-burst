@@ -1,4 +1,4 @@
-// pages/api/login.js
+
 import jwt from 'jsonwebtoken';
 import encrypt from '@/hooks/auth/encrypt';
 import { supabase } from '@/lib/supabase';
