@@ -7,7 +7,7 @@ import toast, { Toaster } from 'react-hot-toast'
 import { useRouter } from 'next/router'
 export default function Create() {
     const [accountName, setAccountName] = useState("")
-    const [accountService, setAccountService] = useState("")
+    const [accountService, setAccountService] = useState(0)
     const [totpToken, setTotpToken] = useState("")
     const router = useRouter("")
     IsAuthenticated();
@@ -15,7 +15,6 @@ export default function Create() {
 
     async function handler(e) {
         e.preventDefault();
-    
         try {
             const userResponse = await fetchUserData();
             handleUserResponse(userResponse);
@@ -80,8 +79,31 @@ export default function Create() {
                     <h4 className="text-textSecondary text-justify text-base sm:text-lg font-light">AuthBurst facilitates the addition of Authenticator accounts, including those from platforms like Gmail, Facebook, Dropbox, and numerous others. While QR code scanning is currently unavailable, you can seamlessly add accounts by entering the provided code from the service where you wish to enable two-factor authentication (2FA).</h4>
                     <label className="font-semibold">Enter account name</label>
                     <input type="text" placeholder="eg. Twitter Username" className="rounded-md bg-backgroundSecondary placeholder:text-textSecondary placeholder:text-lg px-4 border border-borderPrimary focus:outline-none focus:ring-0 focus:border-primaryOrange focus:border-2 transition-all" value={accountName} onChange={(e) => setAccountName(e.target.value)} required />
-                    <label className="font-semibold">Enter service name</label>
-                    <input type="text" placeholder="eg. Google" className="rounded-md bg-backgroundSecondary placeholder:text-textSecondary placeholder:text-lg px-4 border border-borderPrimary focus:outline-none focus:ring-0 focus:border-primaryOrange focus:border-2 transition-all" value={accountService} onChange={(e) => setAccountService(e.target.value)} required />
+                    <label className="font-semibold">Choose service name</label>
+                    <select className="rounded-md bg-backgroundSecondary text-textSecondary placeholder:text-lg px-4 border border-borderPrimary focus:outline-none focus:ring-0 focus:border-primaryOrange focus:border-2 transition-all" value={accountService} onChange={(e) => setAccountService(e.target.value)} required>
+                        <option value={0} defaultValue={true}>Select serivce</option>
+                        <option value={1}>Amazon Web Services</option>
+                        <option value={2}>Amazon</option>
+                        <option value={3}>DigitalOcean</option>
+                        <option value={4}>Discord</option>
+                        <option value={5}>Dropbox</option>
+                        <option value={6}>Evernote</option>
+                        <option value={7}>Facebook</option>
+                        <option value={8}>GitHub</option>
+                        <option value={9}>Google</option>
+                        <option value={10}>Heroku</option>
+                        <option value={11}>IFTTT</option>
+                        <option value={12}>Linode</option>
+                        <option value={13}>Microsoft</option>
+                        <option value={14}>Slack</option>
+                        <option value={15}>Snapchat</option>
+                        <option value={16}>Stripe</option>
+                        <option value={17}>TeamViewer</option>
+                        <option value={18}>Twitter (X)</option>
+                        <option value={19}>WordPress</option>
+                        <option value={20}>Zoom</option>
+                        <option value={21}>Other</option>
+                    </select>
                     <label className="font-semibold">Enter the code given by the website.</label>
                     <input type="text" placeholder="eg. JBSWY3DPEHPK3PXP" className="rounded-md bg-backgroundSecondary placeholder:text-textSecondary placeholder:text-lg px-4 border border-borderPrimary focus:outline-none focus:ring-0 focus:border-primaryOrange focus:border-2 transition-all" value={totpToken} onChange={(e) => setTotpToken(e.target.value)} required />
                     <button type="submit" className="bg-primaryOrange mt-3 w-full p-2 text-xl font-semibold text-white rounded-md hover:opacity-80">Add Account</button>

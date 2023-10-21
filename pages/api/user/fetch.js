@@ -13,7 +13,7 @@ export default async function handler(req, res) {
 
         try {
             const decodedToken = jwt.verify(token, JWT_SECRET)
-            
+
             if (decodedToken.exp * 1000 > Date.now()) {
                 const { data, error } = await supabase
                     .from('users')
@@ -24,7 +24,11 @@ export default async function handler(req, res) {
                     console.error('Error fetching user:', error);
                     return res.status(500).json({ error });
                 }
-                return res.status(200).json({ success: true, data });
+                if (data[0].uid === undefined) {
+                    res.status(500).json({ success: false, message: "User not found!" })
+                } else {
+                    return res.status(200).json({ success: true, data });
+                }
             } else {
                 res.status(401).json({ success: false, message: 'Unauthorized!' });
             }
