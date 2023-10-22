@@ -10,7 +10,6 @@ export default function IsAuthenticated() {
       if (authToken) {
         try {
             const decodedToken = jwt.verify(authToken, process.env.NEXT_PUBLIC_JWT_SECRET_KEY);
-            console.log(decodedToken)
             // Check if the token is still valid
             if (decodedToken.exp * 1000 > Date.now()) {
                 setLoggedIn(true);
