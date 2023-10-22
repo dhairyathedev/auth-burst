@@ -5,12 +5,14 @@ import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios';
 import jwt from "jsonwebtoken"
 import Link from 'next/link';
+import { ReloadIcon } from "@radix-ui/react-icons"
 
 export default function Login() {
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
     const [isLoggedIn, setLoggedIn] = useState(false);
     const [userId, setUserId] = useState(null);
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         const authToken = localStorage.getItem('authToken');
@@ -37,8 +39,9 @@ export default function Login() {
         }
     }, []);
 
-    async function createUser(e) {
+    async function handleLogin(e) {
         e.preventDefault();
+        setLoading(true)
         if (!email) {
             toast.error('Please enter the email!');
         } else {
@@ -74,6 +77,7 @@ export default function Login() {
                 }
             }
         }
+        setLoading(false)
     }
 
     if (isLoggedIn) {
@@ -90,15 +94,20 @@ export default function Login() {
             </div>
             {/* FORM */}
             <main className={`max-w-screen-sm mx-auto mt-10 ${inter.className}`}>
-                <h2 className="text-4xl font-bold text-primaryOrange text-center">Welcome to AuthBurst</h2>
+                <h2 className="text-4xl font-bold text-primaryOrange text-center">Login to AuthBurst</h2>
                 <h4 className="text-textSecondary text-center text-2xl mt-4 font-light">Safe · Secure · Simple</h4>
                 <h3 className="text-center text-xl mt-8 font-semibold">Enter the following details to get started</h3>
-                <form className="flex flex-col space-y-8 mt-10 max-w-md mx-auto" onSubmit={(e) => createUser(e)} action="/">
+                <form className="flex flex-col space-y-8 mt-10 max-w-md mx-auto" onSubmit={(e) => handleLogin(e)} action="/">
                     <input type="email" placeholder="tiny@realemail.com" className="rounded-md bg-backgroundSecondary placeholder:text-textSecondary placeholder:text-lg px-4 border border-borderPrimary focus:outline-none focus:ring-0 focus:border-primaryOrange focus:border-2 transition-all" onChange={(e) => setEmail(e.target.value)} required />
                     <div>
                         <input type="password" placeholder="*******************" className="rounded-md bg-backgroundSecondary placeholder:text-textSecondary placeholder:text-lg px-4 border border-borderPrimary focus:outline-none focus:ring-0 focus:border-primaryOrange focus:border-2 transition-all w-full" onChange={(e) => setPassword(e.target.value)} required />
                     </div>
-                    <button type="submit" className="bg-primaryOrange mt-3 w-full p-2 text-xl font-semibold text-white rounded-md hover:opacity-80">Login</button>
+                    <button type="submit" className="bg-primaryOrange mt-3 w-full p-2 text-white rounded-md hover:opacity-80 flex flex-row items-center justify-center space-x-2" disabled={loading}>
+                        {loading && (
+                            <ReloadIcon className="h-4 w-4 animate-spin" />
+                        )}
+                        <p className="text-xl font-semibold">Login</p>
+                    </button>
                 </form>
             </main>
         </>
