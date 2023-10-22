@@ -2,14 +2,19 @@
 import jwt from 'jsonwebtoken';
 import encrypt from '@/hooks/auth/encrypt';
 import { supabase } from '@/lib/supabase';
+import applyRateLimit from '@/lib/rate-limit';
 
 const DELAY_TIME_MS = 1000; // Set your desired delay time in milliseconds
 const JWT_SECRET = process.env.NEXT_PUBLIC_JWT_SECRET_KEY; // Change this to a secure secret key
 
 export default async function handler(req, res) {
     const { method } = req;
-
     if (method === 'POST') {
+        try {
+            await applyRateLimit(req, res)
+        } catch {
+            return res.status(429).send('Too many requests')
+        }
         const { email, password } = req.body;
 
         try {
