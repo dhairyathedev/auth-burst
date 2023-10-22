@@ -3,12 +3,16 @@ import { inter } from '@/styles/font'
 import Image from 'next/image'
 import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios';
+import { ReloadIcon } from "@radix-ui/react-icons"
+import { useRouter } from 'next/router';
+
 
 export default function SignUp() {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [email, setEmail] = useState("");
-
+    const [loading, setLoading] = useState(false)
+    const router = useRouter()
     async function createUser(e) {
         e.preventDefault();
         if (password.length < 6) {
@@ -16,6 +20,7 @@ export default function SignUp() {
         } else if(!email){
             toast.error("Please enter the email!")
         }else if (password === confirmPassword) {
+            setLoading(true)
             const res = await axios.post("/api/user/signup", {
                 email,
                 password,
@@ -25,10 +30,12 @@ export default function SignUp() {
                 setEmail("")
                 setPassword("")
                 setConfirmPassword("")
+                router.push("/login")
             }
         } else {
             toast.error("Passwords don't match");
         }
+        setLoading(false)
     }
     return (
         <>
@@ -38,7 +45,7 @@ export default function SignUp() {
                 <Image src="/logo.svg" width={210} height={51} alt="AuthBurst" />
             </div>
             {/* FORM */}
-            <main className="max-w-screen-sm mx-auto mt-10">
+            <main className={`max-w-screen-sm mx-auto mt-10 ${inter.className}`}>
                 <h2 className="text-4xl font-bold text-primaryOrange text-center">Welcome to AuthBurst</h2>
                 <h4 className="text-textSecondary text-center text-2xl mt-4 font-light">Safe · Secure · Simple</h4>
                 <h3 className="text-center text-xl mt-8 font-semibold">Enter the following details to get started</h3>
@@ -58,7 +65,12 @@ export default function SignUp() {
                     </div>
                     <div>
                         <p className="text-textSecondary text-sm">By signing up, you comply with <a href="/terms" className="text-primaryOrange underline">Terms and conditions.</a></p>
-                        <button type="submit" className="bg-primaryOrange mt-3 w-full p-2 text-xl font-semibold text-white rounded-md hover:opacity-80">Signup</button>
+                        <button type="submit" className="bg-primaryOrange mt-3 w-full p-2 text-white rounded-md hover:opacity-80 flex flex-row items-center justify-center space-x-2" disabled={loading}>
+                        {loading && (
+                            <ReloadIcon className="h-4 w-4 animate-spin" />
+                        )}
+                        <p className="text-xl font-semibold">Signup</p>
+                    </button>
                     </div>
                 </form>
             </main>
