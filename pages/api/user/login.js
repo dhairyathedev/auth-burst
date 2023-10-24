@@ -4,7 +4,7 @@ import encrypt from '@/hooks/auth/encrypt';
 import { supabase } from '@/lib/supabase';
 import applyRateLimit from '@/lib/rate-limit';
 
-const DELAY_TIME_MS = 1000; // Set your desired delay time in milliseconds
+
 const JWT_SECRET = process.env.NEXT_PUBLIC_JWT_SECRET_KEY; // Change this to a secure secret key
 
 export default async function handler(req, res) {
@@ -30,9 +30,6 @@ export default async function handler(req, res) {
 
             const { uid, password: hash, salt } = data[0];
 
-            // Introduce intentional delay before checking the password
-            await delay(DELAY_TIME_MS);
-
             const { password: inputHash } = encrypt(password, salt);
 
             if (inputHash === hash) {
@@ -53,9 +50,4 @@ export default async function handler(req, res) {
         // Handle other HTTP methods if needed
         res.status(405).json({ error: 'Method Not Allowed' });
     }
-}
-
-// Helper function to introduce delays
-function delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
 }

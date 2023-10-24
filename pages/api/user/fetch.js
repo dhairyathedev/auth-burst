@@ -1,6 +1,5 @@
 
 import jwt from 'jsonwebtoken';
-import encrypt from '@/hooks/auth/encrypt';
 import { supabase } from '@/lib/supabase';
 
 const JWT_SECRET = process.env.NEXT_PUBLIC_JWT_SECRET_KEY; // Change this to a secure secret key
