@@ -8,12 +8,14 @@ import jwt from "jsonwebtoken"
 import encrypt, { decodeTOTPToken, hashTOTPToken } from '@/hooks/auth/encrypt'
 import toast, { Toaster } from 'react-hot-toast'
 import IsAuthenticated from '@/hooks/auth/isAuthenticated'
+import { useRouter } from 'next/router'
 export default function Settings() {
   const [loading, setLoading] = useState(false)
   const [oldPassword, setOldPassword] = useState("")
   const [newPassword, setNewPassword] = useState("")
   const [confirmNewPassword, setConfirmNewPassword] = useState("")
   const [user, setUser] = useState([])
+  const router = useRouter()
   useEffect(() => {
     async function fetchUser() {
       const decodedToken = jwt.verify(localStorage.getItem("authToken"), process.env.NEXT_PUBLIC_JWT_SECRET_KEY);
@@ -72,6 +74,7 @@ export default function Settings() {
             await updateAndRehashTotpTokens(user.uid, password).then(() => {
               toast.success("Password has been changed!")
               localStorage.removeItem("authToken")
+              router.push("/login")
               setLoading(false)
             });
           }

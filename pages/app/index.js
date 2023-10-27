@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react';
 import { decodeTOTPToken } from '@/hooks/auth/encrypt';
 import IsAuthenticated from '@/hooks/auth/isAuthenticated';
 import { getCurrentSeconds } from '@/lib/time';
@@ -6,13 +7,13 @@ import { inter, poppins } from '@/styles/font';
 import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
 const totp = require('totp-generator');
 
 export default function App() {
   const [totpTokens, setTotpTokens] = useState([]);
-  const [totpValues, setTotpValues] = useState([])
+  const [totpValues, setTotpValues] = useState([]);
   const [updatingIn, setUpdatingIn] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -28,6 +29,9 @@ export default function App() {
     // Initial data fetch
     const fetchData = async () => {
       try {
+        // ... your data fetching logic ...
+
+        // Example data fetching code:
         const userRes = await axios.post('/api/user/fetch', {
           token: localStorage.getItem('authToken'),
         });
@@ -40,8 +44,7 @@ export default function App() {
           const decodedTokens = totpRes.data.data.map((item) => {
             return decodeTOTPToken(item.token, userDetails.password, userDetails.uid);
           });
-          setTotpValues(decodedTokens)
-
+          setTotpValues(decodedTokens);
           setTotpTokens(totpRes.data.data);
         }
       } catch (error) {
@@ -54,6 +57,10 @@ export default function App() {
 
   IsAuthenticated();
 
+  // Filter the totpTokens based on the search query
+  const filteredTokens = totpTokens.filter((item) =>
+    item.account_name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <>
@@ -64,6 +71,8 @@ export default function App() {
             type="text"
             placeholder="Search accounts"
             className="rounded-md bg-backgroundSecondary placeholder:text-textSecondary placeholder:text-lg px-4 border border-borderPrimary focus:outline-none focus:ring-0 focus:border-primaryOrange focus:border-2 transition-all w-11/12"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
           <Link
             href="/app/create"
@@ -87,33 +96,31 @@ export default function App() {
           </Link>
         </div>
         <h1 className='text-center font-bold text-2xl mt-10'>Authenticator Tokens</h1>
-        {totpTokens.map((item, index) => (
-          <>
-            <div key={index} className="max-w-screen-sm mx-auto mt-10">
-              <div className="flex flex-row justify-between items-center my-4 w-full">
-                <div className="flex flex-row space-x-2 items-center">
-                  <div className="bg-primaryOrange w-[52px] h-[52px] rounded-md flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="#fff" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                      <path d="M12 12v-9"></path>
-                      <path d="M12 12l-9 -2.5"></path>
-                      <path d="M12 12l9 -2.5"></path>
-                      <path d="M12 12l6 8.5"></path>
-                      <path d="M12 12l-6 8.5"></path>
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className={`${poppins.className} tracking-wider text-2xl`}>{totp(totpValues[index])}</h3>
-                    <p className="text-sm text-textSecondary">{selectValues[item.account_service]}{" (" + item.account_name + ")"}</p>
-                  </div>
+        {filteredTokens.map((item, index) => (
+          <div key={index} className="max-w-screen-sm mx-auto mt-10">
+            <div className="flex flex-row justify-between items-center my-4 w-full">
+              <div className="flex flex-row space-x-2 items-center">
+                <div className="bg-primaryOrange w-[52px] h-[52px] rounded-md flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="#fff" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M12 12v-9"></path>
+                    <path d="M12 12l-9 -2.5"></path>
+                    <path d="M12 12l9 -2.5"></path>
+                    <path d="M12 12l6 8.5"></path>
+                    <path d="M12 12l-6 8.5"></path>
+                  </svg>
                 </div>
-                <div className="bg-gray-100 w-[52px] h-[52px] rounded-full flex items-center justify-center font-bold text-xl">
-                  {updatingIn}
+                <div>
+                  <h3 className={`${poppins.className} tracking-wider text-2xl`}>{totp(totpValues[index])}</h3>
+                  <p className="text-sm text-textSecondary">{selectValues[item.account_service]}{" (" + item.account_name + ")"}</p>
                 </div>
               </div>
-              <hr />
+              <div className="bg-gray-100 w-[52px] h-[52px] rounded-full flex items-center justify-center font-bold text-xl">
+                {updatingIn}
+              </div>
             </div>
-          </>
+            <hr />
+          </div>
         ))}
       </div>
     </>
