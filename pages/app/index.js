@@ -7,8 +7,9 @@ import { inter, poppins } from '@/styles/font';
 import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ReloadIcon } from '@radix-ui/react-icons';
+import { CopyIcon, ReloadIcon, TrashIcon } from '@radix-ui/react-icons';
 import Skeleton from '@/components/ui/Skeleton';
+import toast, { Toaster } from 'react-hot-toast';
 const totp = require('totp-generator');
 
 
@@ -68,6 +69,7 @@ export default function App() {
   );
   return (
     <>
+    <Toaster />
       <div className={`max-w-screen-md mx-auto m-2 mt-8 p-4 ${inter.className}`}>
         <Image src="/logo.svg" width={210} height={51} alt="AuthBurst" />
         <div className="flex flex-row items-center space-x-2 mt-10">
@@ -102,16 +104,16 @@ export default function App() {
         {
           loading && (
             <div className="flex flex-col justify-center items-center mt-10">
-            <Skeleton />
-            <Skeleton />
-        </div>
+              <Skeleton />
+              <Skeleton />
+            </div>
           )
         }
         {
           filteredTokens.length === 0 && !loading && (
             <div className="flex flex-col justify-center items-center mt-20">
-            <p className="text-textSecondary mt-4">No Search results found!</p>
-        </div>
+              <p className="text-textSecondary mt-4">No Search results found!</p>
+            </div>
           )
         }
         {filteredTokens.map((item, index) => (
@@ -129,7 +131,20 @@ export default function App() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className={`${poppins.className} tracking-wider text-2xl`}>{totp(totpValues[index])}</h3>
+                  <div className="flex flex-row space-x-4">
+                    <h3 className={`${poppins.className} tracking-wider text-2xl`}>{totp(totpValues[index])}</h3>
+                    <div className="flex flex-row space-x-2 items-center">
+                      <button onClick={() => {
+                        navigator.clipboard.writeText(totp(totpValues[index]));
+                        toast.success('Copied to clipboard!');
+                      }}>
+                        <CopyIcon className="w-4 h-4 text-textSecondary hover:text-green-500"/>
+                      </button>
+                      <Link href={`/app/delete/${item.id}`}>
+                        <TrashIcon className="w-4 h-4 text-textSecondary hover:text-red-500"/>
+                        </Link>
+                    </div>
+                  </div>
                   <p className="text-sm text-textSecondary">{selectValues[item.account_service]}{" (" + item.account_name + ")"}</p>
                 </div>
               </div>
