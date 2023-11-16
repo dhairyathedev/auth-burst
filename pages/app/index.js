@@ -7,13 +7,17 @@ import { inter, poppins } from '@/styles/font';
 import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
+import { ReloadIcon } from '@radix-ui/react-icons';
+import Skeleton from '@/components/ui/Skeleton';
 const totp = require('totp-generator');
+
 
 export default function App() {
   const [totpTokens, setTotpTokens] = useState([]);
   const [totpValues, setTotpValues] = useState([]);
   const [updatingIn, setUpdatingIn] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -29,9 +33,7 @@ export default function App() {
     // Initial data fetch
     const fetchData = async () => {
       try {
-        // ... your data fetching logic ...
-
-        // Example data fetching code:
+        setLoading(true);
         const userRes = await axios.post('/api/user/fetch', {
           token: localStorage.getItem('authToken'),
         });
@@ -44,8 +46,11 @@ export default function App() {
           const decodedTokens = totpRes.data.data.map((item) => {
             return decodeTOTPToken(item.token, userDetails.password, userDetails.uid);
           });
-          setTotpValues(decodedTokens);
-          setTotpTokens(totpRes.data.data);
+          if (decodedTokens.length > 0) {
+            setTotpValues(decodedTokens);
+            setTotpTokens(totpRes.data.data);
+            setLoading(false);
+          }
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -61,10 +66,9 @@ export default function App() {
   const filteredTokens = totpTokens.filter((item) =>
     item.account_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
   return (
     <>
-      <div className={`max-w-screen-xl mx-auto m-2 mt-8 p-4 ${inter.className}`}>
+      <div className={`max-w-screen-md mx-auto m-2 mt-8 p-4 ${inter.className}`}>
         <Image src="/logo.svg" width={210} height={51} alt="AuthBurst" />
         <div className="flex flex-row items-center space-x-2 mt-10">
           <input
@@ -95,9 +99,23 @@ export default function App() {
             </svg>
           </Link>
         </div>
-        <h1 className='text-center font-bold text-2xl mt-10'>Authenticator Tokens</h1>
+        {
+          loading && (
+            <div className="flex flex-col justify-center items-center mt-10">
+            <Skeleton />
+            <Skeleton />
+        </div>
+          )
+        }
+        {
+          filteredTokens.length === 0 && !loading && (
+            <div className="flex flex-col justify-center items-center mt-20">
+            <p className="text-textSecondary mt-4">No Search results found!</p>
+        </div>
+          )
+        }
         {filteredTokens.map((item, index) => (
-          <div key={index} className="max-w-screen-sm mx-auto mt-10">
+          <div key={index} className="mx-auto mt-10">
             <div className="flex flex-row justify-between items-center my-4 w-full">
               <div className="flex flex-row space-x-2 items-center">
                 <div className="bg-primaryOrange w-[52px] h-[52px] rounded-md flex items-center justify-center">

@@ -6,6 +6,7 @@ import axios from 'axios';
 import jwt from "jsonwebtoken"
 import Link from 'next/link';
 import { ReloadIcon } from "@radix-ui/react-icons"
+import { useRouter } from 'next/router';
 
 export default function Login() {
     const [password, setPassword] = useState('');
@@ -13,7 +14,7 @@ export default function Login() {
     const [isLoggedIn, setLoggedIn] = useState(false);
     const [userId, setUserId] = useState(null);
     const [loading, setLoading] = useState(false)
-
+    const router = useRouter()
     useEffect(() => {
         const authToken = localStorage.getItem('authToken');
         if (authToken) {
@@ -37,7 +38,10 @@ export default function Login() {
                 setUserId(null);
             }
         }
-    }, []);
+        if(isLoggedIn){
+            router.push("/app")
+        }
+    }, [router, isLoggedIn]);
 
     async function handleLogin(e) {
         e.preventDefault();
@@ -82,7 +86,10 @@ export default function Login() {
 
     if (isLoggedIn) {
         // Redirect or render content for authenticated users
-        return <p>You are logged in as user {userId}! <br /><Link href="/app">Go to application</Link></p>;
+        return <div className="flex flex-col justify-center items-center min-h-screen">
+            <ReloadIcon className="h-6 w-6 animate-spin text-textSecondary" />
+            <p className="text-textSecondary mt-4">Taking your over to the application</p>
+        </div>;
     }
 
     return (

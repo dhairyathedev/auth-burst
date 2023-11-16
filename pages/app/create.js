@@ -5,10 +5,12 @@ import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import toast, { Toaster } from 'react-hot-toast'
 import { useRouter } from 'next/router'
+import { ReloadIcon } from '@radix-ui/react-icons'
 export default function Create() {
     const [accountName, setAccountName] = useState("")
     const [accountService, setAccountService] = useState(0)
     const [totpToken, setTotpToken] = useState("")
+    const [loading, setLoading] = useState(false)
     const router = useRouter("")
     IsAuthenticated();
 
@@ -49,6 +51,7 @@ export default function Create() {
     }
     
     async function addTOTP(uid, password) {
+        setLoading(true);
         return await axios.post("/api/totp/add", {
             uid,
             password,
@@ -56,6 +59,9 @@ export default function Create() {
             account_service: accountService,
             token: totpToken,
             digits: 6
+        }).then((res) => {
+            setLoading(false);
+            return res;
         });
     }
     
@@ -106,7 +112,12 @@ export default function Create() {
                     </select>
                     <label className="font-semibold">Enter the code given by the website.</label>
                     <input type="text" placeholder="eg. JBSWY3DPEHPK3PXP" className="rounded-md bg-backgroundSecondary placeholder:text-textSecondary placeholder:text-lg px-4 border border-borderPrimary focus:outline-none focus:ring-0 focus:border-primaryOrange focus:border-2 transition-all" value={totpToken} onChange={(e) => setTotpToken(e.target.value)} required />
-                    <button type="submit" className="bg-primaryOrange mt-3 w-full p-2 text-xl font-semibold text-white rounded-md hover:opacity-80">Add Account</button>
+                    <button type="submit" className="bg-primaryOrange mt-3 w-full p-2 text-white rounded-md hover:opacity-80 flex flex-row items-center justify-center space-x-2" disabled={loading}>
+                        {loading && (
+                            <ReloadIcon className="h-4 w-4 animate-spin" />
+                        )}
+                        <p className="text-xl font-semibold">Add Account</p>
+                    </button>
                 </form>
             </main>
         </>
