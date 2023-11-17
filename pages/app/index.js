@@ -56,6 +56,9 @@ export default function App() {
       } catch (error) {
         console.error('Error fetching data:', error);
       }
+      finally {
+        setLoading(false);
+      }
     };
 
     fetchData();
@@ -112,7 +115,7 @@ export default function App() {
         {
           filteredTokens.length === 0 && !loading && (
             <div className="flex flex-col justify-center items-center mt-20">
-              <p className="text-textSecondary mt-4">No Search results found!</p>
+              <p className="text-textSecondary mt-4">No Token Accounts found!</p>
             </div>
           )
         }

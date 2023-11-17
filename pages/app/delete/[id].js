@@ -2,6 +2,7 @@ import encrypt from '@/hooks/auth/encrypt';
 import { selectValues } from '@/lib/totp-values';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import axios from 'axios';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'
 import toast, { Toaster } from 'react-hot-toast';
@@ -83,13 +84,10 @@ export default function DeleteId() {
     }
 
     if (loading) {
-        return (
-            <>
-                <div>
-                    <h1>Loading...</h1>
-                </div>
-            </>
-        )
+        return <div className="flex flex-col justify-center items-center min-h-screen">
+            <ReloadIcon className="h-6 w-6 animate-spin text-textSecondary" />
+            <p className="text-textSecondary mt-4">Hang tight! Processing the page!</p>
+        </div>;
     }
 
     if (allowed && loading === false) {
@@ -121,12 +119,20 @@ export default function DeleteId() {
                     </div>
                     <form className="flex flex-col space-y-4" onSubmit={validatePassword}>
                         <input type="password" placeholder="Enter your password" className="w-80 rounded-md bg-backgroundSecondary placeholder:text-textSecondary placeholder:text-lg px-4 border border-borderPrimary focus:outline-none focus:ring-0 focus:border-primaryOrange focus:border-2 transition-all" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                        <div className="flex flex-row space-x-4">
+                        <Link href="/app" className="bg-borderPrimary mt-3 w-full p-2 text-white rounded-md hover:opacity-80 flex flex-row items-center justify-center space-x-2">
+                            {loading && (
+                                <ReloadIcon className="h-4 w-4 animate-spin" />
+                            )}
+                            <p className="text-xl font-semibold">Cancel</p>
+                        </Link>
                         <button type="submit" className="bg-primaryOrange mt-3 w-full p-2 text-white rounded-md hover:opacity-80 flex flex-row items-center justify-center space-x-2" disabled={loading}>
                             {loading && (
                                 <ReloadIcon className="h-4 w-4 animate-spin" />
                             )}
                             <p className="text-xl font-semibold">Delete Token</p>
                         </button>
+                        </div>
                     </form>
 
 
