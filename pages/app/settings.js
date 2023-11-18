@@ -1,7 +1,7 @@
 
 import { supabase } from '@/lib/supabase'
 import { inter } from '@/styles/font'
-import { ReloadIcon } from '@radix-ui/react-icons'
+import { HomeIcon, ReloadIcon } from '@radix-ui/react-icons'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import jwt from "jsonwebtoken"
@@ -9,6 +9,7 @@ import encrypt, { decodeTOTPToken, hashTOTPToken } from '@/hooks/auth/encrypt'
 import toast, { Toaster } from 'react-hot-toast'
 import IsAuthenticated from '@/hooks/auth/isAuthenticated'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 export default function Settings() {
   const [loading, setLoading] = useState(false)
   const [oldPassword, setOldPassword] = useState("")
@@ -93,9 +94,14 @@ export default function Settings() {
   IsAuthenticated()
   return (
     <>
-    <Toaster />
+      <Toaster />
       <div className="max-w-screen-md mx-auto m-2 mt-8 p-4">
-        <Image src="/logo.svg" width={210} height={51} alt="AuthBurst" />
+      <div className="flex justify-between items-center">
+          <Image src="/logo.svg" width={210} height={51} alt="AuthBurst" />
+          <Link href={"/app/"}>
+            <HomeIcon className="w-6 h-6 text-textSecondary hover:text-primaryOrange"/>
+          </Link>
+        </div>
 
         <main className={`mt-20 ${inter.className}`}>
           <form className="flex flex-col space-y-1">
@@ -144,6 +150,15 @@ export default function Settings() {
               <p className="text-xl font-semibold">Change password</p>
             </button>
           </form>
+          <div className="mt-10">
+            <h1 className="font-semibold text-lg text-gray-800">Danger zone</h1>
+            <button type="submit" className="border border-primaryOrange mt-3 px-4 py-2 text-primaryOrange rounded-md hover:bg-primaryOrange hover:text-white transition-all" disabled={loading} onClick={() => {
+              localStorage.removeItem("authToken")
+              router.push("/login")
+            }}>
+              <p className="text-lg font-semibold">Logout</p>
+            </button>
+          </div>
         </main>
       </div>
     </>

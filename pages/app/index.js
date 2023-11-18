@@ -7,7 +7,7 @@ import { inter, poppins } from '@/styles/font';
 import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
-import { CopyIcon, ReloadIcon, TrashIcon } from '@radix-ui/react-icons';
+import { CopyIcon, GearIcon, ReloadIcon, TrashIcon } from '@radix-ui/react-icons';
 import Skeleton from '@/components/ui/Skeleton';
 import toast, { Toaster } from 'react-hot-toast';
 const totp = require('totp-generator');
@@ -74,7 +74,12 @@ export default function App() {
     <>
     <Toaster />
       <div className={`max-w-screen-md mx-auto m-2 mt-8 p-4 ${inter.className}`}>
-        <Image src="/logo.svg" width={210} height={51} alt="AuthBurst" />
+        <div className="flex justify-between items-center">
+          <Image src="/logo.svg" width={210} height={51} alt="AuthBurst" />
+          <Link href={"/app/settings"}>
+            <GearIcon className="w-8 h-8 text-textSecondary hover:text-primaryOrange"/>
+          </Link>
+        </div>
         <div className="flex flex-row items-center space-x-2 mt-10">
           <input
             type="text"
