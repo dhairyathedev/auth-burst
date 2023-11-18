@@ -15,7 +15,7 @@ export default async function handler(req, res) {
         } catch {
             return res.status(429).send('Too many requests')
         }
-        const { email, password } = req.body;
+        const { email, password, autoLogout } = req.body;
 
         try {
             const { data, error } = await supabase
@@ -34,9 +34,7 @@ export default async function handler(req, res) {
 
             if (inputHash === hash) {
                 // Generate a JWT token
-                const token = jwt.sign({ userId: uid }, JWT_SECRET, {
-                    expiresIn: '1h', // Set an expiration time
-                });
+                const token = jwt.sign({ userId: uid }, JWT_SECRET, { expiresIn: autoLogout ? '1h' : '365d' });
 
                 return res.status(200).json({ success: true, token });
             } else {

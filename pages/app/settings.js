@@ -16,6 +16,7 @@ export default function Settings() {
   const [newPassword, setNewPassword] = useState("")
   const [confirmNewPassword, setConfirmNewPassword] = useState("")
   const [user, setUser] = useState([])
+  const [autoLogout, setAutoLogout] = useState(null)
   const router = useRouter()
   useEffect(() => {
     async function fetchUser() {
@@ -23,6 +24,7 @@ export default function Settings() {
       const { data, error } = await supabase.from("users").select("*").eq("uid", decodedToken.userId)
       setUser(data[0])
     }
+    setAutoLogout(localStorage.getItem("autoLogout") === "1" ? true : false)
     fetchUser()
   }, [])
 
@@ -158,6 +160,26 @@ export default function Settings() {
             }}>
               <p className="text-lg font-semibold">Logout</p>
             </button>
+            <div className="mt-5">
+                {/* Create a check box for auto logout on or off */}
+                <p className="font-semibold">Automatically log out after 1 hour of inactivity</p>
+                <div className="flex flex-row space-x-2 items-center mt-2">
+                  <input type="checkbox" className="w-5 h-5 border border-borderPrimary rounded-md focus:outline-none focus:ring-0 focus:border-primaryOrange focus:border-2 transition-all text-primaryOrange" checked={autoLogout} onChange={(e) => {
+                    setAutoLogout(e.target.checked)
+                    localStorage.setItem("autoLogout", e.target.checked ? "1" : "0")
+                  }}/>
+                  <div>
+                  <p className="text-textSecondary">Auto logout {
+                    autoLogout? "enabled" : "disabled"
+                  }</p>
+                  <p className="
+                  text-xs text-textSecondary
+                  ">
+                    Note: You need to login again to apply the changes
+                  </p>
+                  </div>
+                  </div>
+            </div>
           </div>
         </main>
       </div>

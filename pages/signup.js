@@ -45,7 +45,7 @@ export default function SignUp() {
                 <Image src="/logo.svg" width={210} height={51} alt="AuthBurst" />
             </div>
             {/* FORM */}
-            <main className={`max-w-screen-sm mx-auto mt-10 ${inter.className}`}>
+            <main className={`max-w-screen-sm mx-auto mt-10 ${inter.className} m-2 p-4`}>
                 <h2 className="text-4xl font-bold text-primaryOrange text-center">Welcome to AuthBurst</h2>
                 <h4 className="text-textSecondary text-center text-2xl mt-4 font-light">Safe · Secure · Simple</h4>
                 <h3 className="text-center text-xl mt-8 font-semibold">Enter the following details to get started</h3>

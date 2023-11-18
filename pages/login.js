@@ -53,6 +53,7 @@ export default function Login() {
                 const res = await axios.post('/api/user/login', {
                     email,
                     password,
+                    autoLogout: localStorage.getItem('autoLogout') === null || localStorage.getItem('autoLogout') === "1"
                 });
 
                 // Check for success status
@@ -62,6 +63,7 @@ export default function Login() {
 
                     // Store the token securely on the client side
                     localStorage.setItem('authToken', token);
+                    localStorage.getItem('autoLogout') === null ? localStorage.setItem('autoLogout', "1") : undefined
                     setEmail('');
                     setPassword('');
                     setLoggedIn(true);
@@ -100,7 +102,7 @@ export default function Login() {
                 <Image src="/logo.svg" width={210} height={51} alt="AuthBurst" />
             </div>
             {/* FORM */}
-            <main className={`max-w-screen-sm mx-auto mt-10 ${inter.className}`}>
+            <main className={`max-w-screen-sm mx-auto mt-10 ${inter.className} m-2 p-4`}>
                 <h2 className="text-4xl font-bold text-primaryOrange text-center">Login to AuthBurst</h2>
                 <h4 className="text-textSecondary text-center text-2xl mt-4 font-light">Safe · Secure · Simple</h4>
                 <h3 className="text-center text-xl mt-8 font-semibold">Enter the following details to get started</h3>
