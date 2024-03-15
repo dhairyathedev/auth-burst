@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { token, id } = body;
+        const { token, id, tid } = body;
 
         if (!token) {
             return res.status(400).json({ error: 'Bad Request', message: 'Token is missing in the request body' });
@@ -27,11 +27,11 @@ export default async function handler(req, res) {
             .from('tokens')
             .select('*')
             .eq('uid', decodedToken.userId)
-            .eq('id', id)
+            .eq('tid', tid)
             .single();
 
         if (error) {
-            console.error('Error fetching user:', error);
+            console.error('Error fetching token:', error);
             return res.status(500).json({ error });
         }
 

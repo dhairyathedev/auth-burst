@@ -28,7 +28,7 @@ export default function DeleteId() {
                 });
                 if (userRes.status === 200) {
                     const res = await axios.post("/api/totp/get", {
-                        id,
+                        tid:id,
                         token: localStorage.getItem('authToken'),
                     });
                     if (res.status === 200) {
@@ -56,7 +56,7 @@ export default function DeleteId() {
         try {
             setLoading(true);
             const res = await axios.post("/api/totp/delete", {
-                id,
+                tid: id,
                 uid
             });
             if (res.status === 200) {
@@ -143,7 +143,7 @@ export default function DeleteId() {
         return (
             <>
                 <div>
-                    <h1>Not allowed</h1>
+                    <h1>Not authorized</h1>
                 </div>
             </>
         )

@@ -148,7 +148,7 @@ export default function App() {
                       }}>
                         <CopyIcon className="w-4 h-4 text-textSecondary hover:text-green-500"/>
                       </button>
-                      <Link href={`/app/delete/${item.id}`}>
+                      <Link href={`/app/delete/${item.tid}`}>
                         <TrashIcon className="w-4 h-4 text-textSecondary hover:text-red-500"/>
                         </Link>
                     </div>

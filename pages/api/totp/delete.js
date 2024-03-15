@@ -4,8 +4,8 @@ export default async function handler(req, res) {
     const { method } = req;
 
     if (method === "POST") {
-        const { uid, id } = req.body;
-        console.log(id)
+        const { uid, tid } = req.body;
+        console.log(tid)
 
         try {
             // delete the token and also check if the token belongs to the user
@@ -13,7 +13,7 @@ export default async function handler(req, res) {
                 .from("tokens")
                 .delete()
                 .eq("uid", uid)
-                .eq("id", id)
+                .eq("tid", tid)
                 .single();
 
             if (error) {
